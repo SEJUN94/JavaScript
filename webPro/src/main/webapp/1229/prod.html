@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="../css/outstyle.css">
+<link rel="stylesheet" href="../css/bootstrap.min.css">
+<script src="../js/jquery-3.6.0.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h4>LPROD - 제품정보</h4>
+    <form>
+      <div class="form-group col-md-2">
+        <label for="lprod">LPROD List</label>
+        <select id="lprod" class="form-control">
+<!--           <option>lprod1</option> -->
+<!--           <option>lprod1</option> -->
+<!--           <option>lprod1</option> -->
+<!--           <option>lprod1</option> -->
+        </select>
+      </div> 
+      <div class="form-group col-md-4">
+        <label for="prod">PROD List</label>
+        <select id="prod" class="form-control">
+<!--           <option>prod1</option> -->
+<!--           <option>prod1</option> -->
+<!--           <option>prod1</option> -->
+<!--           <option>prod1</option> -->
+        </select>
+      </div> 
+    </form>
+  </div>
+<script>
+$.ajax({
+	url : '../1227/lprod.jsp',
+	//type(or method) 생략 가능- get
+	success:function(aa){
+		let code = "";
+		$.each(aa, function(i){
+			code += `<option value=${aa[i].gu}>${this.nm}</option>`;
+		});
+		$('#lprod').html(code);
+	},
+	error:function(xhr){
+		alert("상태 : " + xhr.status);
+	},
+	dataType: 'json'
+});
+
+$('#lprod').on('change',function(){
+	$.ajax({
+		url : '/webPro/Prod',	// context root가 '/'일 때 url mapping만 입력
+		data : {'gu' : $(this).val()},
+		success : function(asd){
+			let code = "";
+			if(asd.code == "ok"){
+				$.each(asd.value, function(i){
+				  code += `<option value=${this.id}>${asd.value[i].nm}</option>`;
+				});
+			}else{//asd.code == no
+				code += `<option value='0'>데이터 없음</option>`;
+			}
+			$('#prod').html(code);
+		},
+		error : function(xhr){
+			alert(xhr.status);
+		},
+		dataType : 'json'
+	});
+});
+
+$('#prod').on('change',function(){
+	$.ajax({
+		url : '/webPro/Prod',
+		type : 'post',
+		data : {'id' : $(this).val()},
+		success : function(){},
+		error : function(xhr){
+			alert(xhr.status);
+		},
+		dataType : 'json'
+	});
+});
+
+
+
+</script>  
+</body>
+</html>
