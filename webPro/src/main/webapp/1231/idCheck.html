@@ -9,7 +9,7 @@
 <script src="../js/bootstrap.min.js"></script>
 </head>
 <body>
-	<div class="container">
+  <div class="container">
   <h2>회원가입</h2>
   <form class="form-horizontal" method="post" onsubmit="return false;">
     
@@ -19,7 +19,7 @@
       <div class="col-sm-3">
         <input type="text" class="form-control" id="id" placeholder="Enter id" name="mem_id">
       </div>
-      <button type="button" class="btn btn-sm btn-success" id="idChk">중복검사</button>
+<!--       <button type="button" class="btn btn-sm btn-success" id="idChk">중복검사</button> -->
       <span id="rst"></span>
     </div>
     
@@ -68,8 +68,8 @@
       <div class="col-sm-3">
         <input type="text" class="form-control" id="zip" name="mem_zip">
       </div>
-      <button type="button" id="modalBtn" class="btn btn-info">modal우편검색1</button>
-      <button type="button" data-toggle="modal" data-target="#myModal" class="btn btn-info">modal우편검색2</button>
+      <button type="button" id="modalBtn" class="btn btn-info">우편검색</button>
+<!--       <button type="button" data-toggle="modal" data-target="#myModal" class="btn btn-info">modal우편검색</button> -->
     </div>
     
     <div class="form-group">
@@ -95,46 +95,40 @@
     </div>
   </form>
   </div>
-  
- <script>
- //ketup 이벤트 : 키를 눌렀다가 떼는 순간
+
+<script>
+
+//	아이디 중복검사 
+//keyup 이벤트 : 키를 눌렀다가 떼는 순간
 $('#id').on('keyup',function(){
-// 버튼을 눌렀을때 실행됨
-// $('#idChk').on('click',function(){ //});
+//$('#idChk').on('click',function(){});
 	$.ajax({
 		url : 'idCheck.jsp',
-		data : {'mId':$('#id').val()},
+		data : {'mId' : $('#id').val()},
 		success : function(a){
 			if(a.cd == "ok"){
-				$('#rst').hmlt(a.str).css('color','green');
+				$('#rst').html(a.str).css('color','green');
 			}else{
-				$('#rst').hmlt(a.str).css('color','red');
+				$('#rst').html(a.str).css('color','red');
 			}
 		},
 		error : function(xhr){
 			alert(xhr.status);
 		},
 		dataType : 'json'
-	}); 
- });
- 
- // 우편번호 찾기
- $('#modalBtn').on('click',function(){
+	});
+});
+
+//	우편번호 찾기
+$('#modalBtn').on('click',function(){
 	
-	 // 주소지 입력 창 띄우기 - 팝업
-	 //window.open('url','창이름 or target지정', 'specs..')
-	 window.open('searchZip.html', 'width=400 height=300 top=200 left=20');
-	 
-	 $.ajax({
-		 url : 'dongSerch.jsp',
-		 data : {},
-		 success : function(){},
-		 error : function(xhr){
-			 alert(xhr.status);
-		 },
-		 dataType : 'json'
-	 });
- });
- </script>
+	//주소지 입력 창 띄우기 - 팝업
+	//window.open('url','창이름 or target지정','specs..')
+	window.open('searchZip.html','',
+			'width=500 height=600 top=200 left=20');
+});
+
+</script>
+
 </body>
 </html>

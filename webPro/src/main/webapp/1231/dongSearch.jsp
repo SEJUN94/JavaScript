@@ -1,21 +1,21 @@
 <%@page import="java.sql.ResultSet"%>
-<%@page import="java.sql.DriverManager"%>
 <%@page import="java.sql.Statement"%>
+<%@page import="java.sql.DriverManager"%>
 <%@page import="java.sql.Connection"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%
   String vdong = request.getParameter("dong");
-  
+
   Class.forName("oracle.jdbc.driver.OracleDriver");
   String url = "jdbc:oracle:thin:@localhost:1521:xe";
   Connection con = DriverManager.getConnection(url, "OSJ94", "java");
   Statement stmt = con.createStatement();
-  String sql ="select * from ziptb where dong like '" + vdong + "%'";
+  String sql = "select * from ziptb where dong like '" + vdong + "%'";
   ResultSet rs = stmt.executeQuery(sql);
-%>
+%>  
 [
-<%
+<% 
 	int i = 0;
 	while(rs.next()){
 		String zip = rs.getString("zipcode");
@@ -29,8 +29,8 @@
 		if(i>0) out.print(",");
 %>
 		{
-			"code" : "<%=zip %>",
-			"addr" : "<%=sido %><%=gugun %><%=dong %>",
+			"code"	: "<%=zip %>",
+			"addr"	: "<%=sido %><%=gugun %><%=dong %>",
 			"bungi" : "<%=bunji %>"
 		}
 <%
