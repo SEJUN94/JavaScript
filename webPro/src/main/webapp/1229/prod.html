@@ -7,6 +7,9 @@
 <link rel="stylesheet" href="../css/bootstrap.min.css">
 <script src="../js/jquery-3.6.0.min.js"></script>
 <script src="../js/bootstrap.min.js"></script>
+<style>
+
+</style>
 </head>
 <body>
   <div class="container">
@@ -29,7 +32,8 @@
 <!--           <option>prod1</option> -->
 <!--           <option>prod1</option> -->
         </select>
-      </div> 
+      </div>
+      <div id="detail" class="col-md-8"></div>
     </form>
   </div>
 <script>
@@ -42,6 +46,7 @@ $.ajax({
 			code += `<option value=${aa[i].gu}>${this.nm}</option>`;
 		});
 		$('#lprod').html(code);
+		$('#lprod').trigger('change'); // 요소에 적용된 이벤트의 핸들러를 강제로 실행시킨다
 	},
 	error:function(xhr){
 		alert("상태 : " + xhr.status);
@@ -63,6 +68,7 @@ $('#lprod').on('change',function(){
 				code += `<option value='0'>데이터 없음</option>`;
 			}
 			$('#prod').html(code);
+			$('#prod').trigger('change'); // 요소에 적용된 이벤트의 핸들러를 강제로 실행시킨다
 		},
 		error : function(xhr){
 			alert(xhr.status);
@@ -76,7 +82,34 @@ $('#prod').on('change',function(){
 		url : '/webPro/Prod',
 		type : 'post',
 		data : {'id' : $(this).val()},
-		success : function(){},
+		success : function(data){
+			if(data.code == "ok"){
+				let cd = `<table class='table table-condensed' border='1'>`;
+				cd += `<tr><td>항목</td><td>내용</td></tr>`;
+				
+				let idx = 1;
+				let size = Object.keys(data).length;
+				$.each(data,function(){
+					if(idx < size) {
+					cd += `<tr><td>${Object.keys(data)[idx]}</td>`;	
+					cd += `<td>${Object.values(data)[idx]}</td></tr>`;
+					idx++;
+					}
+				});
+				cd += `</table>`;
+				
+				$('#detail').html(cd);
+				// $('#detail').html("내용있음");
+			}else{//data.code == "no"
+				$('#detail').empty();
+				//$('#detail').html("내용없음");
+				$('#detail').append($('<img>',{
+					'src' : "../images/suzy.jpg",
+					'alt' : '수지',
+					'title' : '새해복많이받으세요 여러분'
+				}));
+			}
+		},
 		error : function(xhr){
 			alert(xhr.status);
 		},

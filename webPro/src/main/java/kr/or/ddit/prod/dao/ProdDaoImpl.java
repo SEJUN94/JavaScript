@@ -29,5 +29,11 @@ public class ProdDaoImpl implements IProdDao {
 		List<ProdVO> list = smc.queryForList("prod.prodNames", prod_lgu);
 		return list;
 	}
+	@Override
+	public ProdVO prodDetails(String prod_id) throws SQLException {
+		// TODO Auto-generated method stub
+		ProdVO vo = (ProdVO) smc.queryForObject("prod.prodDetails", prod_id);
+		return vo;
+	}
 
 }

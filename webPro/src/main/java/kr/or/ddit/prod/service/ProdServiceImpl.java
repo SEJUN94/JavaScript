@@ -31,5 +31,17 @@ public class ProdServiceImpl implements IProdService {
 		}
 		return list;
 	}
+	@Override
+	public ProdVO prodDetails(String prod_id) {
+		// TODO Auto-generated method stub
+		ProdVO vo = null;
+		try {
+			vo = dao.prodDetails(prod_id);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return vo;
+	}
 
 }

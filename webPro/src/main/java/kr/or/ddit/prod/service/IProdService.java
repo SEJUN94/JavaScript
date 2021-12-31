@@ -11,4 +11,6 @@ public interface IProdService {
 	//제품정보 이름-id 조회
 	public List<ProdVO> prodNames(String prod_lgu);
 	
+	//제품정보 상세정보 조회
+	public ProdVO prodDetails(String prod_id);
 }

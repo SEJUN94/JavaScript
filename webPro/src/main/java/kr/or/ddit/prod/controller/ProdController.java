@@ -55,7 +55,16 @@ public class ProdController extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// 포워딩 할 jsp >> 오늘 날짜 폴더/prodDetails.jsp 로 지정하세요
+		// 0. 요청데이터 가져오기
+		String prodId = request.getParameter("id");
+		// 1. service 객체 얻어오기
+		IProdService service = ProdServiceImpl.getService();
+		// 2. service 메소를 호출하여 결과 값받기
+		ProdVO vo = service.prodDetails(prodId);
+		// 3. request에 저장
+		request.setAttribute("voValue", vo);
+		// 4. 결과 값을 jsp로 포워딩 >> 오늘 날짜 폴더 /prodDetails.jsp
+		request.getRequestDispatcher("WEB-INF/1231/prodDetails.jsp").forward(request, response);
 	}
 
 }
