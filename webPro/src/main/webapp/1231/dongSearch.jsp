@@ -31,7 +31,7 @@
 		{
 			"code"	: "<%=zip %>",
 			"addr"	: "<%=sido %><%=gugun %><%=dong %>",
-			"bungi" : "<%=bunji %>"
+			"bunji" : "<%=bunji %>"
 		}
 <%
 		i++;

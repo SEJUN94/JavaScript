@@ -7,11 +7,13 @@
 <link rel="stylesheet" href="../css/bootstrap.min.css">
 <script src="../js/jquery-3.6.0.min.js"></script>
 <script src="../js/bootstrap.min.js"></script>
+<script src="../js/regex.js"></script>
+
 </head>
 <body>
   <div class="container">
   <h2>회원가입</h2>
-  <form class="form-horizontal" method="post" onsubmit="return false;">
+  <form class="form-horizontal" method="post" onsubmit="return valid();">
     
     <div class="form-group">
       <label for="id" class="control-label col-sm-2">아이디</label>
@@ -42,7 +44,7 @@
     <div class="form-group">
       <label for="pass" class="control-label col-sm-2">비밀번호</label>
       <div class="col-sm-3">
-        <input type="password" class="form-control" id="pass" name="mem_pass">
+        <input type="text" class="form-control" id="pass" name="mem_pass">
       </div>
       <span class="sp"></span>
     </div>
@@ -68,8 +70,9 @@
       <div class="col-sm-3">
         <input type="text" class="form-control" id="zip" name="mem_zip">
       </div>
-      <button type="button" id="modalBtn" class="btn btn-info">우편검색</button>
-<!--       <button type="button" data-toggle="modal" data-target="#myModal" class="btn btn-info">modal우편검색</button> -->
+      <button type="button" id="popupBtn" class="btn btn-info">우편검색</button>
+      <button type="button" id="modalBtn" class="btn btn-info">modal우편검색</button>
+<!--  <button type="button" data-toggle="modal" data-target="#myModal" class="btn btn-info">modal우편검색</button> -->
     </div>
     
     <div class="form-group">
@@ -96,11 +99,119 @@
   </form>
   </div>
 
+  <!-- Modal start -->
+  <div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">우편번호 찾기</h4>
+        </div>
+        <div class="modal-body">
+          <p>찾는 동을 입력하세요</p>
+          <input type="text" id="dong">
+	      <input type="button" value="검색" id="btnCode">
+	      <br>
+	      <div id="result"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal end -->
 <script>
+
+function valid(){
+	//alert("제대로 나오는지 확인"); // 전송 버튼 누르면 뜸 안뜨면 코드가 잘못된건
+	
+	event.preventDefault();	//submit 이벤트를 막아 페이지 리로드를 방지
+	
+	//유효성검증(validation check) - id
+	let idValue = $('#id').val().trim();
+	//길이체크
+	if(idValue.length < 1){
+		//alert("아이디를 입력하세요");
+		noProc($('#id'),"아이디를 입력하세요");
+		return false;
+	}
+	//패턴체크
+	let regId = /^[a-zA-Z][a-zA-Z0-9]{3,7}$/;
+	if(regId.test(idValue)){
+		okProc($('#id'));
+	}else{
+		noProc($('#id'), "영문,숫자,4~8자리 입력 가능");
+		return false;
+	}
+	
+	//유효성검증 - name
+	let nameValue = $('#name').val().trim();
+	if(nameValue.length < 1){
+		noProc('#name', "이름을 입력하세요");
+		return false;
+	}
+	let regName = /^[가-힣]{2,5}$/;
+	if(regName.test(nameValue)){
+		okProc($('#name'));
+	}else{
+		noProc($('#name'), "한글 2~5자리 입력 가능");
+		return false;
+	}
+		
+	//유효성검증 - pass
+	let passValue = $('#pass').val().trim();
+	if(passValue.length < 1){
+		noProc('#pass', "비밀번호를 입력하세요");
+		return false;
+	}
+	//전방탐색(?=) : 찾을문자를 선택하는 기호 ' ?=기준문자' 를 기준으로 지정한다.
+	// . : 문자를 의미
+	// * : 0회 이상 반복을 의미
+	// ? : 앞에 위피하는 문자가 0또는 1회 일치
+	// ?=.*? 가 뜻하는 내용 >> 임의의 문자(./영대소문자,숫자,특수문자를 나타냄)중 최소한으로 일치하는 내용에 대해서...
+	let regPass = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#$%^&*()_+|]).{8,}$/;
+	if(regPass.test(passValue)){
+		okProc($('#pass'));
+	}else{
+		noProc($('#pass'), "대/소문자,특수문자,숫자 포함 8자리 이상 입력 가능");
+		return false;
+	}
+	//유효성검증 - hp
+	let hpValue = $('#hp').val().trim();
+	if(hpValue.length < 1){
+		noProc('#hp', "번호를 입력하세요");
+		return false;
+	}
+	let regHp = /^[0-9]{3}-[0-9]{3,4}-[0-9]{4}$/;
+	if(regHp.test(hpValue)){
+		okProc($('#hp'));
+	}else{
+		noProc($('#hp'), "형식에 맞게 입력하세요");
+		return false;
+	}
+	//유효성검증 - mail
+	let mailValue = $('#mail').val().trim();
+	if(mailValue.length < 1){
+		noProc('#mail', "mail을 올바르게 입력하세요");
+		return false;
+	}
+	//[0-9a-zA-z]		>> mailid
+	//+@[0-9a-zA-Z]		>> @naver	@google
+	//+(\.[a-z]+){1,2}	>> .com		.co.kr
+	let regMail = /^[0-9a-zA-Z]+@[0-9a-zA-Z]+(\.[a-z]+){1,2}$/;
+	if(regMail.test(mailValue)){
+		okProc($('#mail'));
+	}else{
+		noProc($('#mail'), "형식에 맞게 입력하세요");
+		return false;
+	}
+}
 
 //	아이디 중복검사 
 //keyup 이벤트 : 키를 눌렀다가 떼는 순간
-$('#id').on('keyup',function(){
+/* $('#id').on('keyup',function(){
 //$('#idChk').on('click',function(){});
 	$.ajax({
 		url : 'idCheck.jsp',
@@ -117,16 +228,76 @@ $('#id').on('keyup',function(){
 		},
 		dataType : 'json'
 	});
-});
+}); */
 
 //	우편번호 찾기
-$('#modalBtn').on('click',function(){
+$('#popupBtn').on('click',function(){
 	
 	//주소지 입력 창 띄우기 - 팝업
 	//window.open('url','창이름 or target지정','specs..')
 	window.open('searchZip.html','',
 			'width=500 height=600 top=200 left=20');
 });
+
+//modal 띄우기 1
+$('#modalBtn').on('click',function(){
+	$('#myModal').modal('show');
+});
+//modal 띄우기 2
+//버튼에 data-toggle="modal" data-target="#myModal" 속성 추가하기
+
+//modal 우편찾기 
+$('#btnCode').on('click',function(){
+	
+	//null check
+	let vdong = $('#dong').val().trim();
+	if(vdong.length < 1){
+		alert("동을 입력하세요!!");
+		return false;
+	}
+	
+	$.ajax({
+	  url : 'dongSearch.jsp',
+	  data : {'dong' : vdong},
+	  success : function(aa){
+		  //숙제로 .. 테이블 형태로 찍어주세요
+		  let code = `<table border='1' class='table table-hover'`;
+		  code += `<tr><td>우편번호</td><td>주소</td><td>번지</td></tr>`;
+		  $.each(aa,function(){
+			  code += `<tr class='ziptr'><td>${this.code}</td>`;
+			  code += `<td>${this.addr}</td>`;
+			  code += `<td>${this.bunji}</td></tr>`;
+		  });
+		  code += `</table>`;
+		  $('#result').html(code);
+	  },
+	  error : function(xhr){
+	  	alert(xhr.status);
+	  },
+	  dataType : 'json'
+	});
+});
+
+//결과 화면에서 하나를 선택해서 부모 창으로 출력
+$('#result').on('click','.ziptr',function(){
+	let zCode = $('td:eq(0)',this).text();
+	let addr = $('td:eq(1)',this).text();
+	//부모창에 선택 값 출력
+	$('#zip').val(zCode);
+	$('#add1').val(addr);
+	//입력,출력부분 초기화
+// 	$('#dong').empty(); //입력요소의 컨텐츠에는 적용되지 않음
+	$('#dong').val("");
+	$('#result').empty(); // empty메서드는 태그요소 안쪽에 있는걸을 비워줌
+	//모달 창 닫기
+	$('#myModal').modal('hide');
+});
+
+//전송기능이 없지만 클릭이벤트를 통해 콜백 메소드를 호출하여 사용
+//메소드 안에서 메소드를 호출할 때는 메소드 호출 기호()를 사용하지 않는다
+//$('#sendBtn').on('click',valid());    <- 메소드안에서는 메소드 뒤에() x
+$('#sendBtn').on('click',valid);
+
 
 </script>
 
