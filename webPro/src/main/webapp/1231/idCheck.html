@@ -70,8 +70,8 @@
       <div class="col-sm-3">
         <input type="text" class="form-control" id="zip" name="mem_zip">
       </div>
-      <button type="button" id="popupBtn" class="btn btn-info">우편검색</button>
-      <button type="button" id="modalBtn" class="btn btn-info">modal우편검색</button>
+      <button type="button" id="popupBtn" class="btn btn-info btn-sm">우편검색</button>
+      <button type="button" id="modalBtn" class="btn btn-info btn-xs">modal우편검색</button>
 <!--  <button type="button" data-toggle="modal" data-target="#myModal" class="btn btn-info">modal우편검색</button> -->
     </div>
     
@@ -91,7 +91,7 @@
     
     <div class="form-group">
       <div class="col-sm-offset-2 col-sm-6">
-        <button type="submit" class="btn btn-primary"> 전송</button>
+        <button type="submit" class="btn btn-primary btn-sm"> 전송</button>
 <!--         <button type="button" id="sendBtn" class="btn btn-primary"> 전송</button> -->
         <span id="joinspan"></span>
       </div>
@@ -207,11 +207,51 @@ function valid(){
 		noProc($('#mail'), "형식에 맞게 입력하세요");
 		return false;
 	}
+	 let formData = $('form').serialize();
+// 	 let formData = $('form').serializeArray();
+// 	 console.log(formData);
+
+	 $.ajax({
+			url : '/webPro/Member',
+			type : 'post',
+			data : formData,
+			success : function(aa){
+				if(aa.cd == "ok"){
+					$('#joinspan').html(aa.id + "님 환영합니다.").css({'color' : 'green', 'font-weight' : 'bold'});
+				}else{
+					$('joinspan').html("가입실패").css({'color' : 'red', 'font-weight' : 'bold'});
+				}
+			},
+			error : function(xhr){
+				alert(xhr.status);
+			},
+			dataType : 'json'
+		});
 }
+
+
+// 	회원정보 저장 - insert(serialize 사용)
+
+// 	Ajax를 사용해서 서버로 데이터를 보낼 때 서버가 이해할 수 있는 방식으로 데이터 형식을 변경해야 한다.
+//  	이때 사용하는 방법이 객체 직렬화이며, 데이터를 직렬화하면 하나의 객체로 모아서 하나의 덩어리롤 전송가능하다.
+ 	
+//  	jQuery에서 제공하는 직렬화 메소드 2가지
+//  	- serialize			: key와 value로 이루어진 한쌍을 '&'문자로 구분한 형태(=URL-encoded 표기법)
+//  	- serializeArray	: key와 value가 연관되어 있으며, 키를 통해 연관되는 값을 얻을 수 있는 형태
+   
+//  	  let data = $('form').serialize();
+//    : form 데이터를 Object Array 형태로 만든다
+   
+//    let data = $('form').serializeArray();
+//    : form태그 내부 값을 name=value형태로 변경해 쿼리스트링을 만든다
+//    : 주의할 점 - form데이터의 name을 vo생성 필드명으로 작성해야 함
+   
+//    console.log(data);
+
 
 //	아이디 중복검사 
 //keyup 이벤트 : 키를 눌렀다가 떼는 순간
-/* $('#id').on('keyup',function(){
+$('#id').on('keyup',function(){
 //$('#idChk').on('click',function(){});
 	$.ajax({
 		url : 'idCheck.jsp',
@@ -228,7 +268,7 @@ function valid(){
 		},
 		dataType : 'json'
 	});
-}); */
+});
 
 //	우편번호 찾기
 $('#popupBtn').on('click',function(){

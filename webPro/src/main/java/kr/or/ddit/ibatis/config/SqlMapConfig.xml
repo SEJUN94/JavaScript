@@ -22,6 +22,7 @@
 	 -->
 	<typeAlias alias="buyerVO" type="kr.or.ddit.buyer.vo.BuyerVO"/>
 	<typeAlias alias="prodVO" type="kr.or.ddit.prod.vo.ProdVO"/>
+	<typeAlias alias="memVO" type="kr.or.ddit.member.vo.MemberVO"/>
 	
 	
 	<!-- java에서 db에 커넥션하는 방법 3 -->
@@ -68,5 +69,6 @@
 	-->
 	<sqlMap resource="kr/or/ddit/ibatis/mapping/buyer.xml" />
 	<sqlMap resource="kr/or/ddit/ibatis/mapping/prod.xml" />
+	<sqlMap resource="kr/or/ddit/ibatis/mapping/member.xml" />
 
 </sqlMapConfig>
