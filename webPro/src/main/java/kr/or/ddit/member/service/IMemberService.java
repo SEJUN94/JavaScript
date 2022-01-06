@@ -7,5 +7,4 @@ public interface IMemberService {
 	//회원정보 저장
 	public String insertMember(MemberVO vo);
 	
-	
 }
