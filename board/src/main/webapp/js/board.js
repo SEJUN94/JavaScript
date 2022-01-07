@@ -22,21 +22,27 @@ listServer = function(page) {
 			code += '				<a data-toggle="collapse" data-parent="#accordion" href="#collapse'+ this.num +'">'+ res.data[i].subject + '</a>';
 			code += '			</h4>';
 			code += '		</div>';
-			//code += '		<div id="collapse'+ this.num +'" class="panel-collapse collapse">'; // 창이 다 닫혀있게 설정
-			code += '		<div id="collapse'+ this.num +'" class="panel-collapse collapse in">';  // 첨을 열렸을때 다 펼쳐져있게 설정
+			code += '		<div id="collapse'+ this.num +'" class="panel-collapse collapse">'; // 창이 다 닫혀있게 설정
+			//code += '		<div id="collapse'+ this.num +'" class="panel-collapse collapse in">';  // 첨을 열렸을때 다 펼쳐져있게 설정
 			code += '			<div class="panel-body">';
 			
 			
 			code += '         <p class="p1">작성자 : ' + this.writer + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 			code += '						조회수 : ' + this.hit + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-			code += '						날짜 : ' + this.wdate + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+			code += '						날짜 : ' + res.data[i].wdate + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 			code += '		  </p>';
 			code += '		  <p class="p2">';
 			code += '			<input type="button" value="수정" class="btn btn-warning btn-sm">';
 			code += '			<input type="button" value="삭제" class="btn btn-danger btn-sm">';
 			code += '		  </p>';
 			code += '		  <p class="p3">'+ this.content +'</p>';
+			//댓글 str
+			code += '		  <p class="p4">';
+			code += '		  <textarea cols="100" rows="4"></textarea>';
+			code += '		  <input idx="'+ this.num +'" type="button" value="등록" name="reply" class="action btn btn-primary btn-sm">';
+			code += '		  </p>';
 			
+			//댓글 end
 			code += '		  </div>';
 			code += '		</div>';
 			code += '	  </div>';
@@ -60,7 +66,12 @@ listServer = function(page) {
 			pager += '     <ul class="pagination pager">';
 			//for() str
 			for(let i=res.sp; i<=res.ep; i++){
-				pager += '   <li><a href="#" class="paging">'+ i +'</a></li>';
+				//현재 페이지 확인
+				if(currentPage == i){
+					pager += '   <li class="active"><a href="#" class="paging">'+ i +'</a></li>';
+				}else {
+					pager += '   <li><a href="#" class="paging">'+ i +'</a></li>';
+				}
 			}
 			pager += '	   </ul>';
 			
@@ -74,7 +85,7 @@ listServer = function(page) {
 			$('#pagelist').html(pager);
 		},
 		error : function(xhr){
-					alert(xhr.status);
+			alert(xhr.status);
 		},
 		dataType : 'json'
 	});
@@ -82,12 +93,52 @@ listServer = function(page) {
 
 $(function(){
 	//동적생성요소-delegate방식으로 접근
+	
+	//이전 버튼 이벤트
+	$('#pagelist').on('click','.prev',function(){
+		//next 클릭했을 때 현재 페이지 기준으로 끝 값을 확인해서 처리
+		let vprev = $('.paging').first().text();
+		currentPage = parseInt(vprev) - 1;
+		listServer(currentPage);
+	});
+	
+	//번호 버튼 이벤트
+	$('#pagelist').on('click','.paging',function(){
+		currentPage = $(this).text();
+		listServer(currentPage);
+	});	
+	//다음 버튼 이벤트
 	$('#pagelist').on('click','.next',function(){
 		//next 클릭했을 때 현재 페이지 기준으로 끝 값을 확인해서 처리
-		$('.paging')		
+		let vnext = $('.paging').last().text();
+		currentPage = parseInt(vnext) + 1;
+		listServer(currentPage);
 	});
 });
 
-
+//게시글 저장
+writeServer = function(){
+	$.ajax({
+		url : '/board/Write',
+		type : 'post',
+		data : $('form').serialize(),
+		success : function(res){
+			if(res.code == "ok"){
+				alert("게시글이 등록되었습니다.");
+				$('#myModal').modal('hide');
+				$('.txt').val("");
+				
+			}else{
+				alert("게시글 등록이 실패하였습니다.");
+			}
+			//리스트 조회 메소드 호출
+			listServer(1);
+		},
+		error : function(xhr){
+			alert(xhr.status);
+		},
+		dataType : 'json'
+	});
+}
 
 

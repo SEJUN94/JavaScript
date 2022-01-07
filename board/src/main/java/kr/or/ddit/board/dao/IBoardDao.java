@@ -13,5 +13,8 @@ public interface IBoardDao {
 	
 	// 페이지 별 리스트 조회
 	public List<BoardVO> bordList(Map<String, Integer> map) throws Exception;
+	
+	// 게시글 저장
+	public int insertBoard(BoardVO vo) throws Exception;
 
 }

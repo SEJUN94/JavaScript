@@ -32,4 +32,9 @@ public class BoardDaoImpl implements IBoardDao {
 	public List<BoardVO> bordList(Map<String, Integer> map) throws Exception {
 		return smc.queryForList("board.boardList", map);		
 	}
+	@Override
+	public int insertBoard(BoardVO vo) throws Exception {
+		// TODO Auto-generated method stub
+		return (int) smc.insert("board.insertBoard", vo);
+	}
 }

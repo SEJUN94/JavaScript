@@ -45,4 +45,16 @@ public class BoardServiceImpl implements IBoardService {
 		return list;
 	}
 
+	@Override
+	public int insertBoard(BoardVO vo) {
+		int seq = 0; 
+		try {
+			dao.insertBoard(vo);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return seq;
+	}
+
 }
